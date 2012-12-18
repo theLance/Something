@@ -5,11 +5,13 @@
 #include <boost/thread/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-class Worker;
+#include "Worker.hpp"
 
 class ThreadPool
 {
   public:
+    ~ThreadPool();
+    void create_workers();
     //Task* pop_task();
     //void push_task( Task& task );
   private:
@@ -17,42 +19,21 @@ class ThreadPool
     //TASK LIST from which worker will pop
 };
 
-class Worker
+ThreadPool::~ThreadPool()
 {
-  public:
-    explicit Worker( ThreadPool& tp ) : m_threadpool( tp ), m_isalive( true ),
-                                        m_isactive( false ), m_worker( 0 ) { awaken(); }
-    ~Worker() { if( m_worker != 0 ) delete m_worker; }
-
-    void activate() { m_isactive = true; }
-    void deactivate() { m_isactive = false; }
-    //void join() {};
-  private:
-    bool m_isactive;
-    bool m_isalive;
-    ThreadPool& m_threadpool;
-    void awaken();
-    void execute_tasks();
-    boost::thread* m_worker;
-};
-
-void Worker::awaken()
-{
-  m_worker = new boost::thread( [&](){
-                                  while( m_isalive )
-                                  {
-                                    execute_tasks();
-                                    //implement sleep mechanism later!!!
-                                  } } );
-}
-
-void Worker::execute_tasks()
-{
-  while( m_isactive )
+  for( auto member : m_workers )
   {
-    //m_threadpool->pop_task()
-    std::cout << "Activated..." << std::endl;
+    delete member;
   }
 }
+
+void ThreadPool::create_workers()
+{
+  for( unsigned i = 0; i < 4; ++i )
+  {
+    m_workers.push_back( new Worker( this ) );
+  }
+}
+
 
 #endif // THREADPOOL_HPP_INCLUDED
