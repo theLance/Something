@@ -20,16 +20,34 @@ class ThreadPool
 class Worker
 {
   public:
-    explicit Worker( ThreadPool& tp ) : m_threadpool( tp ), m_isactive( false ) {};
+    explicit Worker( ThreadPool& tp ) : m_threadpool( tp ), m_isalive( true ),
+                                        m_isactive( false ), m_worker( 0 ) { awaken(); }
+    ~Worker() { if( m_worker != 0 ) delete m_worker; }
+
     void activate() { m_isactive = true; }
     void deactivate() { m_isactive = false; }
-    void execute();
+    //void join() {};
   private:
     bool m_isactive;
+    bool m_isalive;
     ThreadPool& m_threadpool;
+    void awaken();
+    void execute_tasks();
+    boost::thread* m_worker;
 };
 
-void Worker::execute()
+void Worker::awaken()
+{
+  m_worker = new boost::thread( [&](){
+                                  while( m_isalive )
+                                  {
+                                    execute_tasks();
+                                    //fine-tune sleep mechanism later!!!
+                                    boost::this_thread::sleep(boost::posix_time::seconds(1));
+                                  } } );
+}
+
+void Worker::execute_tasks()
 {
   while( m_isactive )
   {
