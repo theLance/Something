@@ -1,3 +1,5 @@
+del runner.*
+
 python c:\mingw\cxxtest\bin\cxxtestgen --error-printer -o runner.cpp test.hpp
 
 g++  runner.cpp -std=c++0x -Lc:\BOOST\boost_1_52_0\stage\lib\^

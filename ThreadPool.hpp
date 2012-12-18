@@ -42,8 +42,7 @@ void Worker::awaken()
                                   while( m_isalive )
                                   {
                                     execute_tasks();
-                                    //fine-tune sleep mechanism later!!!
-                                    boost::this_thread::sleep(boost::posix_time::seconds(1));
+                                    //implement sleep mechanism later!!!
                                   } } );
 }
 
@@ -52,6 +51,7 @@ void Worker::execute_tasks()
   while( m_isactive )
   {
     //m_threadpool->pop_task()
+    std::cout << "Activated..." << std::endl;
   }
 }
 

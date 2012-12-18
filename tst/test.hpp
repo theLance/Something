@@ -25,7 +25,7 @@ public:
     Worker wo(tp);
     TS_ASSERT_EQUALS( wo.m_isalive, true );
     TS_ASSERT_EQUALS( wo.m_isactive, false );
+    TS_ASSERT_EQUALS( ( wo.m_worker != 0 ), true );
     TS_ASSERT_EQUALS( &tp, &wo.m_threadpool );
   }
-
 };
