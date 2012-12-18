@@ -15,6 +15,7 @@ class Worker
     void activate() { m_isactive = true; }
     void deactivate() { m_isactive = false; }
     //void join() {};
+
   private:
     bool m_isactive;
     bool m_isalive;
