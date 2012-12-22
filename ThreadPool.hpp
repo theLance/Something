@@ -4,7 +4,6 @@
 #define BOOST_THREAD_USE_LIB
 #include <boost/thread/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <algorithm>
 
 #include "Tracer.hpp"
 #include "Worker.hpp"
