@@ -5,6 +5,8 @@
 #include <boost/thread/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <memory>
+
 #include "Tracer.hpp"
 #include "Worker.hpp"
 
@@ -15,12 +17,12 @@ class ThreadPool
     void create_workers();
     void activate_workers();
     void deactivate_workers();
-    //Task* pop_task();
-    //void push_task( Task& task );
+    ///Task* pop_task();
+    ///void push_task( Task& task );
 
   private:
-    std::vector< Worker* > m_workers;
-    //TASK LIST from which worker will pop
+    std::vector< std::shared_ptr< Worker > > m_workers;
+    ///TASK LIST from which worker will pop
 };
 
 ThreadPool::~ThreadPool()
@@ -29,10 +31,6 @@ ThreadPool::~ThreadPool()
   if( !m_workers.empty() )
   {
     deactivate_workers();
-    for( auto worker : m_workers )
-    {
-      delete worker;
-    }
     m_workers.clear();
     TRACE("ThreadPool voided");
   }
@@ -44,7 +42,7 @@ void ThreadPool::create_workers()
   TRACE("ThreadPool creating workers...");
   for( unsigned i = 0; i < 4; ++i )
   {
-    m_workers.push_back( new Worker( this ) );
+    m_workers.push_back( std::shared_ptr< Worker >( new Worker( this ) ) );
   }
   TRACE("ThreadPool workers created");
 }
