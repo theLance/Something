@@ -4,6 +4,7 @@
 #define BOOST_THREAD_USE_LIB
 #include <boost/thread/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <algorithm>
 
 #include "Worker.hpp"
 
@@ -12,6 +13,8 @@ class ThreadPool
   public:
     ~ThreadPool();
     void create_workers();
+    void activate_workers();
+    void deactivate_workers();
     //Task* pop_task();
     //void push_task( Task& task );
 
@@ -22,10 +25,17 @@ class ThreadPool
 
 ThreadPool::~ThreadPool()
 {
-  for( auto member : m_workers )
+  if( !m_workers.empty() )
   {
-    delete member;
+    deactivate_workers();
+    for( auto worker : m_workers )
+    {
+      delete worker;
+    }
+    m_workers.clear();
+    std::cout << "\nThreadPool voided\n";
   }
+  std::cout << "\nThreadPool destroyed\n";
 }
 
 void ThreadPool::create_workers()
@@ -36,5 +46,22 @@ void ThreadPool::create_workers()
   }
 }
 
+void ThreadPool::activate_workers()
+{
+  for( auto worker : m_workers )
+  {
+    worker->activate();
+  }
+  std::cout << "Workers activated..." << std::endl;
+}
+
+void ThreadPool::deactivate_workers()
+{
+  for( auto worker : m_workers )
+  {
+    worker->deactivate();
+  }
+  std::cout << "Workers deactivated..." << std::endl;
+}
 
 #endif // THREADPOOL_HPP_INCLUDED

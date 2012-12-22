@@ -36,5 +36,10 @@ public:
     TS_ASSERT_EQUALS( tp.m_workers.size(), 0 );
     tp.create_workers();
     TS_ASSERT_EQUALS( tp.m_workers.size(), 4 );
+
+    for( auto i = tp.m_workers.begin(); i != tp.m_workers.end(); ++i )
+      std::cout << std::boolalpha << (*i)->m_isactive;
+
+    std::cout << std::boolalpha << wo.m_isactive;
   }
 };
