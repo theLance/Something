@@ -6,6 +6,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <algorithm>
 
+#include "Tracer.hpp"
 #include "Worker.hpp"
 
 class ThreadPool
@@ -25,6 +26,7 @@ class ThreadPool
 
 ThreadPool::~ThreadPool()
 {
+  TRACE("ThreadPool destruction commencing...");
   if( !m_workers.empty() )
   {
     deactivate_workers();
@@ -33,35 +35,39 @@ ThreadPool::~ThreadPool()
       delete worker;
     }
     m_workers.clear();
-    std::cout << "\nThreadPool voided\n";
+    TRACE("ThreadPool voided");
   }
-  std::cout << "\nThreadPool destroyed\n";
+  TRACE("ThreadPool destroyed");
 }
 
 void ThreadPool::create_workers()
 {
+  TRACE("ThreadPool creating workers...");
   for( unsigned i = 0; i < 4; ++i )
   {
     m_workers.push_back( new Worker( this ) );
   }
+  TRACE("ThreadPool workers created");
 }
 
 void ThreadPool::activate_workers()
 {
+  TRACE("ThreadPool activating workers...");
   for( auto worker : m_workers )
   {
     worker->activate();
   }
-  std::cout << "Workers activated..." << std::endl;
+  TRACE("ThreadPool workers activated");
 }
 
 void ThreadPool::deactivate_workers()
 {
+  TRACE("ThreadPool deactivating workers...");
   for( auto worker : m_workers )
   {
     worker->deactivate();
   }
-  std::cout << "Workers deactivated..." << std::endl;
+  TRACE("ThreadPool workers deactivated");
 }
 
 #endif // THREADPOOL_HPP_INCLUDED

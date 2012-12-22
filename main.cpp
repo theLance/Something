@@ -35,10 +35,9 @@ int main()
   boost::this_thread::sleep(boost::posix_time::seconds(1));
   std::cout << "MAIN: End of inner scope -------" << std::endl;
   }
-  ///SOMETIMES (NOT ALL) CRASHES HERE WITH SEGFAULT??
 
   std::cout << "MAIN: Destroyed TP..." << std::endl;
-  boost::this_thread::sleep(boost::posix_time::seconds(3));
+  boost::this_thread::sleep(boost::posix_time::seconds(2));
   std::cout << "MAIN: All is said and done..." << std::endl;
 
   return 0;
