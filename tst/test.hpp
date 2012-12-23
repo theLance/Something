@@ -9,7 +9,7 @@
 
 #include "tst_tool/banner.hpp"
 
-#include "../ThreadPool.hpp"
+#include "../include/ThreadPool.hpp"
 
 
 class TestSuite : public CxxTest::TestSuite

@@ -4,7 +4,7 @@
 ////////////////////////
 
 #include <iostream>
-#include "ThreadPool.hpp"
+#include "include/ThreadPool.hpp"
 
 
 void awaken()
@@ -23,7 +23,7 @@ int main()
   boost::this_thread::sleep(boost::posix_time::seconds(1));
 
   //---EARLY EXIT FOR TESTING---
-  return 0;
+//  return 0;
 
   tp.create_workers();
   std::cout << "MAIN: Workers created..." << std::endl;
