@@ -22,6 +22,20 @@ public:
     Worker wo(&tp);
   }
 
+  void testTracer()
+  {
+    banner("Tracer test");
+    STracer::getinstance()->trace("test");
+    std::ifstream log;
+    log.open("testlog.txt");
+    TS_ASSERT_DIFFERS( log.good() , 0 );
+    std::string logtest;
+    log >> logtest;
+    log >> logtest;
+    log >> logtest;
+    TS_ASSERT_EQUALS( logtest, "test" );
+  }
+
   void testInitTp()
   {
     banner("Initialization");

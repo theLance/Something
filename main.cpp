@@ -21,6 +21,9 @@ int main()
   ThreadPool tp;
   Worker wo(&tp);
   boost::this_thread::sleep(boost::posix_time::seconds(1));
+
+  return 0;
+
   tp.create_workers();
   std::cout << "MAIN: Workers created..." << std::endl;
   boost::this_thread::sleep(boost::posix_time::seconds(1));

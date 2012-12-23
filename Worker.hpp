@@ -52,7 +52,7 @@ void Worker::execute_tasks()
   {
     //trace if pop successful
     ///m_threadpool->pop_task()
-    std::cout << "a";
+//    std::cout << "a";
     boost::this_thread::sleep(boost::posix_time::millisec(500));
     ///implement sleep mechanism later!!!
   }
