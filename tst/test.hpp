@@ -4,7 +4,7 @@
 #define protected public
 
 ///------REMOVE LATER (when tracing works as it should)
-#define TRACE_OFF
+//#define TRACE_OFF
 ///------
 
 #include "tst_tool/banner.hpp"
@@ -25,15 +25,23 @@ public:
   void testTracer()
   {
     banner("Tracer test");
-    STracer::getinstance()->trace("test");
+
     std::ifstream log;
-    log.open("testlog.txt");
+    log.open("log.txt");
     TS_ASSERT_DIFFERS( log.good() , 0 );
+
     std::string logtest;
-    log >> logtest;
-    log >> logtest;
-    log >> logtest;
+    std::getline( log, logtest );
+    TS_ASSERT_EQUALS( logtest, "Logfile created" );
+
+    log.seekg( 0, std::ios::end );
+    STracer::getinstance()->trace("test");
+    TRACE("test2");
+
+    std::getline( log, logtest );
     TS_ASSERT_EQUALS( logtest, "test" );
+    std::getline( log, logtest );
+    TS_ASSERT_EQUALS( logtest, "test2" );
   }
 
   void testInitTp()
