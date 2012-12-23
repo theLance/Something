@@ -22,33 +22,6 @@ public:
     Worker wo(&tp);
   }
 
-  void testTracer()
-  {
-    banner("Tracer write test");
-
-    std::ifstream log;
-    log.open("log.txt");
-    TS_ASSERT_DIFFERS( log.good() , 0 );
-
-    std::string logtest;
-    std::getline( log, logtest );
-    TS_ASSERT_EQUALS( logtest, "Logfile created" );
-
-    #ifndef TRACE_OFF
-    log.seekg( 0, std::ios::end );
-    #endif
-
-    STracer::getinstance()->trace("test");
-    std::getline( log, logtest );
-    TS_ASSERT_EQUALS( logtest, "test" );
-
-    #ifndef TRACE_OFF
-    TRACE("test2");
-    std::getline( log, logtest );
-    TS_ASSERT_EQUALS( logtest, "test2" );
-    #endif
-  }
-
   void testInitTp()
   {
     banner("Initialization");
@@ -104,4 +77,35 @@ public:
       TS_ASSERT_EQUALS( worker->m_isactive, false );
     }
   }
+
+  void testTracer()
+  {
+    banner("Tracer write test");
+
+    STracer::getinstance();
+    STracer::m_data->m_logfile.flush();
+
+    std::ifstream log;
+    log.open("log.txt");
+    TS_ASSERT_DIFFERS( log.good() , 0 );
+
+    std::string logtest;
+    std::getline( log, logtest );
+    TS_ASSERT_EQUALS( logtest, "Logfile created" );
+
+    #ifndef TRACE_OFF
+    log.seekg( 0, std::ios::end );
+    #endif
+
+    STracer::getinstance()->trace("test");
+    std::getline( log, logtest );
+    TS_ASSERT_EQUALS( logtest, "test" );
+
+    #ifndef TRACE_OFF
+    TRACE("test2");
+    std::getline( log, logtest );
+    TS_ASSERT_EQUALS( logtest, "test2" );
+    #endif
+  }
+
 };

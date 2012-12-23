@@ -22,6 +22,7 @@ int main()
   Worker wo(&tp);
   boost::this_thread::sleep(boost::posix_time::seconds(1));
 
+  //---EARLY EXIT FOR TESTING---
   return 0;
 
   tp.create_workers();
