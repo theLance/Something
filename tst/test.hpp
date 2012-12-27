@@ -15,6 +15,16 @@
 class TestSuite : public CxxTest::TestSuite
 {
 public:
+
+  void testTaskList()
+  {
+    banner("TaskList");
+    TaskList tl;
+    tl.pop_task();
+  }
+
+/*********************************************/
+
   void testCreateTp()
   {
     banner("Instantiation");
@@ -77,6 +87,8 @@ public:
       TS_ASSERT_EQUALS( worker->m_isactive, false );
     }
   }
+
+/*********************************************/
 
   void testTracer()
   {

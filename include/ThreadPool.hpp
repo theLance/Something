@@ -9,6 +9,7 @@
 
 #include "Tracer.hpp"
 #include "Worker.hpp"
+#include "TaskList.hpp"
 
 class ThreadPool
 {
@@ -22,7 +23,7 @@ class ThreadPool
 
   private:
     std::vector< std::shared_ptr< Worker > > m_workers;
-    ///TASK LIST from which worker will pop
+    ///TaskList m_tptasks; --- from which worker will pop
 };
 
 ThreadPool::~ThreadPool()
