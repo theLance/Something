@@ -19,7 +19,7 @@ class TaskList
     Task* pop_task();
     ///void push_task( Task& task );
   private:
-    ///Mutex m_mutex
+    boost::mutex m_mutex;
     std::vector< Task* > m_tasks;
 };
 
