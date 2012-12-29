@@ -18,7 +18,7 @@ void ThreadPool::create_workers()
   TRACE("ThreadPool creating workers...");
   for( unsigned i = 0; i < NUM_OF_THREADS; ++i )
   {
-    m_workers.push_back( std::shared_ptr< Worker >( new Worker( this ) ) );
+    m_workers.push_back( std::shared_ptr< Worker >( new Worker( *this ) ) );
   }
   TRACE("ThreadPool workers created");
 }

@@ -17,7 +17,7 @@ void Worker::execute_tasks()
   while( m_isactive )
   {
     m_workerstask = NULL;
-    m_workerstask = m_threadpool->pop_task();
+    m_workerstask = m_threadpool.pop_task();
     if( m_workerstask )
     {
       TRACE("Worker received task... Running...");

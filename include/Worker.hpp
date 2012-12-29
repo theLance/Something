@@ -15,23 +15,22 @@ class ThreadPool;
 class Worker
 {
   public:
-    explicit Worker( const ThreadPool* tp ) : m_threadpool( const_cast< ThreadPool* >(tp) ),
-//    explicit Worker( const ThreadPool* tp ) : m_threadpool( tp ),
-                                              m_isactive( false ),
-                                              m_isalive( true ),
-                                              m_workerstask( NULL ),
-                                              m_worker( [this]()
-                                                       {
-                                                         TRACE("Worker created");
-                                                         while( m_isalive )
-                                                         {
-                                                           execute_tasks();
-                                                      ///implement sleep mechanism later!!!
-                                                         }
-                                                         TRACE("Worker died");
-                                                       })
-                                              {
-                                              };
+    explicit Worker( ThreadPool& tp ) : m_threadpool( tp ),
+                                        m_isactive( false ),
+                                        m_isalive( true ),
+                                        m_workerstask( NULL ),
+                                        m_worker( [this]()
+                                                  {
+                                                    TRACE("Worker created");
+                                                    while( m_isalive )
+                                                    {
+                                                      execute_tasks();
+                                                ///implement sleep mechanism later!!!
+                                                    }
+                                                    TRACE("Worker died");
+                                                  })
+                                        {
+                                        };
     virtual ~Worker();
 
     void activate() { m_isactive = true; }
@@ -40,8 +39,7 @@ class Worker
   private:
     bool m_isactive;
     bool m_isalive;
-//    const ThreadPool* m_threadpool;
-    ThreadPool* m_threadpool;
+    ThreadPool& m_threadpool;
     Task* m_workerstask;
     void execute_tasks();
     boost::thread m_worker;

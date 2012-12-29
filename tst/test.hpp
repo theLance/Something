@@ -49,25 +49,28 @@ public:
   {
     banner("Instantiation");
     ThreadPool tp;
-    Worker wo(&tp);
+    Worker wo(tp);
   }
 
   void testInitTp()
   {
     banner("Initialization");
     ThreadPool tp;
-    Worker wo(&tp);
+    Worker wo(tp);
     TS_ASSERT_EQUALS( wo.m_isalive, true );
     TS_ASSERT_EQUALS( wo.m_isactive, false );
     TS_ASSERT_EQUALS( wo.m_workerstask, nullptr );
-    TS_ASSERT_EQUALS( &tp, wo.m_threadpool );
+
+    ThreadPool* tpptr = &tp;
+    ThreadPool* tpptr2 = &wo.m_threadpool;
+    TS_ASSERT_EQUALS( tpptr, tpptr2 );
   }
 
   void testCreateWorkers()
   {
     banner("Create worker threads");
     ThreadPool tp;
-    Worker wo(&tp);
+    Worker wo(tp);
     TS_ASSERT_EQUALS( tp.m_workers.size(), 0 );
     tp.create_workers();
     TS_ASSERT_EQUALS( tp.m_workers.size(), 4 );
@@ -77,7 +80,7 @@ public:
   {
     banner("Activate worker");
     ThreadPool tp;
-    Worker wo(&tp);
+    Worker wo(tp);
     TS_ASSERT_EQUALS( wo.m_isactive, false );
     wo.activate();
     TS_ASSERT_EQUALS( wo.m_isactive, true );
@@ -90,7 +93,7 @@ public:
   {
     banner("TP: Activate workers");
     ThreadPool tp;
-    Worker wo(&tp);
+    Worker wo(tp);
     tp.create_workers();
     for( auto worker : tp.m_workers )
     {

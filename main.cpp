@@ -19,7 +19,7 @@ int main()
   m_worker.join();
   {
   ThreadPool tp;
-  Worker wo(&tp);
+  Worker wo(tp);
   boost::this_thread::sleep(boost::posix_time::seconds(1));
 
   //---EARLY EXIT FOR TESTING---
