@@ -11,6 +11,10 @@
 #include "Worker.hpp"
 #include "TaskList.hpp"
 
+#ifndef NUM_OF_THREADS
+  #define NUM_OF_THREADS 4
+#endif
+
 class ThreadPool
 {
   public:
@@ -18,12 +22,11 @@ class ThreadPool
     void create_workers();
     void activate_workers();
     void deactivate_workers();
-    ///Task* pop_task();
-    ///void push_task( Task& task );
+    void push_task( Task* task ) { m_tptasks.push_task( task ); }
 
   private:
     std::vector< std::shared_ptr< Worker > > m_workers;
-    ///TaskList m_tptasks; --- from which worker will pop
+    TaskList m_tptasks;
 };
 
 ThreadPool::~ThreadPool()
@@ -41,7 +44,7 @@ ThreadPool::~ThreadPool()
 void ThreadPool::create_workers()
 {
   TRACE("ThreadPool creating workers...");
-  for( unsigned i = 0; i < 4; ++i )
+  for( unsigned i = 0; i < NUM_OF_THREADS; ++i )
   {
     m_workers.push_back( std::shared_ptr< Worker >( new Worker( this ) ) );
   }

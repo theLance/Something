@@ -3,7 +3,7 @@
 
 #include <boost/thread/mutex.hpp>
 
-#include <vector>
+#include <deque>
 
 #define SCOPEDLOCK boost::mutex::scoped_lock lock( m_mutex )
 
@@ -17,19 +17,23 @@ class TaskList
 {
   public:
     Task* pop_task();
-    ///void push_task( Task& task );
+    void push_task( Task* task ) { m_tasks.push_front( task ); }
   private:
-    boost::mutex m_mutex;
-    std::vector< Task* > m_tasks;
+    mutable boost::mutex m_mutex;
+    std::deque< Task* > m_tasks;
 };
 
 Task* TaskList::pop_task()
 {
   SCOPEDLOCK;
-  ///extract the Task*
-  ///return the Task*
-  Task* tmp;
-  return tmp;
+  Task* tmp_task = 0;
+  if( m_tasks.size() )
+  {
+    tmp_task = m_tasks.back();
+    m_tasks.pop_back();
+  }
+  return tmp_task;
 }
+
 
 #endif // TASKLIST_HPP_INCLUDED

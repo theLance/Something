@@ -11,6 +11,11 @@
 
 #include "../include/ThreadPool.hpp"
 
+class FakeTask : public Task
+{
+  public:
+    void run() { while(0){} }
+};
 
 class TestSuite : public CxxTest::TestSuite
 {
@@ -20,7 +25,22 @@ public:
   {
     banner("TaskList");
     TaskList tl;
-    tl.pop_task();
+    FakeTask ft;
+    Task* taskptr = &ft;
+    Task* testptr = nullptr;
+
+    banner("Insertion");
+    tl.push_task( taskptr );
+    TS_ASSERT_DIFFERS( 0, tl.m_tasks.size() );
+
+    banner("Extraction");
+    testptr = tl.pop_task();
+    TS_ASSERT_DIFFERS( nullptr, testptr );
+
+    banner("No pop when empty - safety check");
+    TS_ASSERT_EQUALS( 0, tl.m_tasks.size() );
+    testptr = tl.pop_task();
+    TS_ASSERT_EQUALS( nullptr, testptr );
   }
 
 /*********************************************/
@@ -67,7 +87,7 @@ public:
 
   void testTpActivateDeactivateWorkers()
   {
-    banner("TP Activate workers");
+    banner("TP: Activate workers");
     ThreadPool tp;
     Worker wo(&tp);
     tp.create_workers();
@@ -80,12 +100,26 @@ public:
     {
       TS_ASSERT_EQUALS( worker->m_isactive, true );
     }
-    banner("TP Deactivate workers");
+    banner("TP: Deactivate workers");
     tp.deactivate_workers();
     for( auto worker : tp.m_workers )
     {
       TS_ASSERT_EQUALS( worker->m_isactive, false );
     }
+  }
+
+  void testAddTaskToTp()
+  {
+    banner("TP: Add task");
+    ThreadPool tp;
+    FakeTask ft;
+    Task* taskptr = &ft;
+    Task* testptr = nullptr;
+
+    banner("Insertion");
+    tp.push_task( taskptr );
+    TS_ASSERT_DIFFERS( 0, tp.m_tptasks.m_tasks.size() );
+    TS_ASSERT_EQUALS( taskptr, tp.m_tptasks.m_tasks.front() );
   }
 
 /*********************************************/
