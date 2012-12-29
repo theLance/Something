@@ -1,16 +1,25 @@
 #ifndef WORKER_H_INCLUDED
 #define WORKER_H_INCLUDED
 
-#include "ThreadPool.hpp"
+#define BOOST_THREAD_USE_LIB
+#include <boost/thread/thread.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <memory>
+
+#include "Tracer.hpp"
+#include "TaskList.hpp"
 
 class ThreadPool;
 
 class Worker
 {
   public:
-    explicit Worker( const ThreadPool* tp ) : m_threadpool( tp ),
+    explicit Worker( const ThreadPool* tp ) : m_threadpool( const_cast< ThreadPool* >(tp) ),
+//    explicit Worker( const ThreadPool* tp ) : m_threadpool( tp ),
                                               m_isactive( false ),
                                               m_isalive( true ),
+                                              m_workerstask( NULL ),
                                               m_worker( [this]()
                                                        {
                                                          TRACE("Worker created");
@@ -23,7 +32,7 @@ class Worker
                                                        })
                                               {
                                               };
-    ~Worker();
+    virtual ~Worker();
 
     void activate() { m_isactive = true; }
     void deactivate() { m_isactive = false; }
@@ -31,32 +40,12 @@ class Worker
   private:
     bool m_isactive;
     bool m_isalive;
-    const ThreadPool* m_threadpool;
+//    const ThreadPool* m_threadpool;
+    ThreadPool* m_threadpool;
+    Task* m_workerstask;
     void execute_tasks();
     boost::thread m_worker;
 };
-
-Worker::~Worker()
-{
-  TRACE("Worker destruction commencing...");
-  m_isactive = false;
-  m_isalive = false;
-  TRACE("Waiting for worker to join...");
-  m_worker.join();
-  TRACE("Worker destroyed");
-}
-
-void Worker::execute_tasks()
-{
-  while( m_isactive )
-  {
-    //trace if pop successful
-    ///m_threadpool->pop_task()
-//    std::cout << "a";
-    boost::this_thread::sleep(boost::posix_time::millisec(500));
-    ///implement sleep mechanism later!!!
-  }
-}
 
 
 #endif // WORKER_H_INCLUDED

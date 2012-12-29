@@ -4,7 +4,7 @@
 #define protected public
 
 ///------CONTROL TRACING...
-#define TRACE_OFF
+//#define TRACE_OFF
 ///------
 
 #include "tst_tool/banner.hpp"
@@ -14,7 +14,7 @@
 class FakeTask : public Task
 {
   public:
-    void run() { while(0){} }
+    void run() { TRACE("Running fake task..."); while(0){} }
 };
 
 class TestSuite : public CxxTest::TestSuite
@@ -59,6 +59,7 @@ public:
     Worker wo(&tp);
     TS_ASSERT_EQUALS( wo.m_isalive, true );
     TS_ASSERT_EQUALS( wo.m_isactive, false );
+    TS_ASSERT_EQUALS( wo.m_workerstask, nullptr );
     TS_ASSERT_EQUALS( &tp, wo.m_threadpool );
   }
 
