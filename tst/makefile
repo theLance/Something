@@ -11,24 +11,30 @@ LIBS=	-lboost_date_time-mgw46-mt-1_52	\
 
 ALL_FILES= runner.o Worker.o ThreadPool.o TaskList.o Tracer.o
 
+##### 	CONTROL TRACING OF TEST HERE #####
+# CCO=g++ -c
+# CC=g++
+CCO=g++ -c -DTRACE_OFF
+CC=g++ -DTRACE_OFF
+##########################################
 
 runner.exe: $(ALL_FILES)
-	g++ $(ALL_FILES) -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
+	$(CC) $(ALL_FILES) -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
 
 runner.o: runner.cpp
-	g++ -c runner.cpp -std=c++0x $(INCLUDE) -o $@
+	$(CCO) runner.cpp -std=c++0x $(INCLUDE) -o $@
 
 Worker.o: $(SRC)Worker.cpp
-	g++ -c $(SRC)Worker.cpp -std=c++0x $(INCLUDE) -o $@
+	$(CCO) $(SRC)Worker.cpp -std=c++0x $(INCLUDE) -o $@
 	
 ThreadPool.o: $(SRC)ThreadPool.cpp
-	g++ -c $(SRC)ThreadPool.cpp -std=c++0x $(INCLUDE) -o $@
+	$(CCO) $(SRC)ThreadPool.cpp -std=c++0x $(INCLUDE) -o $@
 	
 TaskList.o: $(SRC)TaskList.cpp
-	g++ -c $(SRC)TaskList.cpp -std=c++0x $(INCLUDE) -o $@
+	$(CCO) $(SRC)TaskList.cpp -std=c++0x $(INCLUDE) -o $@
 	
 Tracer.o: $(SRC)Tracer.cpp
-	g++ -c $(SRC)Tracer.cpp -std=c++0x $(INCLUDE) -o $@
+	$(CCO) $(SRC)Tracer.cpp -std=c++0x $(INCLUDE) -o $@
 
 clean:
 	del *.o
