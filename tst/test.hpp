@@ -3,10 +3,6 @@
 #define private public
 #define protected public
 
-///------CONTROL TRACING...
-//#define TRACE_OFF   -- DOES NOT WORK WITH MAKEFILE - SET TRACING IN MAKEFILE!
-///------
-
 #include "tst_tool/banner.hpp"
 
 #include "../include/ThreadPool.hpp"
