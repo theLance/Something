@@ -3,53 +3,62 @@ REM --------------------------------------------------------------------------
 REM    Usage: run_test.bat OR run_test.bat traceon OR run_test.bat traceoff
 REM --------------------------------------------------------------------------
 
-del runner.*
+del runner*.*
+
+@echo ----------------------------------------------------------------
+@echo --------------- CREATING SOURCEFILES FOR TESTING ---------------
+@echo ----------------------------------------------------------------
 
 python c:\mingw\cxxtest\bin\cxxtestgen --error-printer -o runner.cpp test.hpp
-
-if "%1" == "traceoff" goto :traceoff_comp
-REM ---- if nothing is specified, will compile both ----
-
-REM compile with tracing ON
-@echo ----------------------------------------------------------------
-@echo ------------------- COMPILING WITH TRACES ON -------------------
-@echo ----------------------------------------------------------------
+python c:\mingw\cxxtest\bin\cxxtestgen --error-printer -o runTracer.cpp testTracer.hpp
 
 mingw32-make clean
 
-mingw32-make TRACE=ON
-
-if "%1" == "traceon" goto :clean
-REM compile with tracing OFF
-:traceoff_comp
 @echo ----------------------------------------------------------------
-@echo ------------------- COMPILING WITH TRACES OFF ------------------
+@echo ------------ COMPILING BASIC TEST CASES - TRACE OFF ------------
 @echo ----------------------------------------------------------------
 
-mingw32-make clean
+mingw32-make basic
 
-mingw32-make
+del Tracer.o
 
-:clean
+@echo ----------------------------------------------------------------
+@echo ------------- COMPILING TRACER TEST WITH TRACES ON -------------
+@echo ----------------------------------------------------------------
+
+mingw32-make tracer TRACE=ON
+
+del Tracer.o
+
+@echo ----------------------------------------------------------------
+@echo ------------- COMPILING TRACER TEST WITH TRACES OFF ------------
+@echo ----------------------------------------------------------------
+
+mingw32-make tracer
+
+@echo ----------------------------------------------------------------
+@echo ------------- TESTING BASIC FUNCTIONS - TRACES OFF -------------
+@echo ----------------------------------------------------------------
+
+runner.exe
+
+@echo ----------------------------------------------------------------
+@echo ---------------- TESTING TRACER WITH TRACES ON -----------------
+@echo ----------------------------------------------------------------
+
+runner_tron.exe
+
+@echo ----------------------------------------------------------------
+@echo ---------------- TESTING TRACER WITH TRACES OFF ----------------
+@echo ----------------------------------------------------------------
+
+runner_troff.exe
+
+
 @echo ----------------------------------------------------------------
 @echo --------------------------- CLEANUP ----------------------------
 @echo ----------------------------------------------------------------
 
 mingw32-make clean
-
-if "%1" == "traceoff" goto :traceoff_run
-REM ---- if nothing is specified, will run both ----
-
-@echo ----------------------------------------------------------------
-@echo -------------------- TESTING WITH TRACES ON --------------------
-@echo ----------------------------------------------------------------
-
-runner_t.exe
-if "%1" == "traceon" goto :eof
-
-:traceoff_run
-@echo ----------------------------------------------------------------
-@echo -------------------- TESTING WITH TRACES OFF -------------------
-@echo ----------------------------------------------------------------
-
-runner.exe
+del runner*.*
+del runTracer.cpp

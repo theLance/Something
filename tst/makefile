@@ -11,27 +11,43 @@ LIBS=	-lboost_date_time-mgw46-mt-1_52	\
 	-lboost_system-mgw46-mt-1_52 \
 	-lboost_thread-mgw46-mt-1_52
 
-ALL_OBJS := Worker.o ThreadPool.o TaskList.o Tracer.o
-ALL_SRCS := $(ALL_FILES:.o=.cpp)
+BASIC_ALL_OBJS := Worker.o ThreadPool.o TaskList.o
+BASIC_ALL_SRCS := $(ALL_FILES:.o=.cpp)
 
 CC=g++
+CCO=g++ -c -DTRACE_OFF
 
 ifeq ($(TRACE),ON)
-CCO=g++ -c
-TRGT=runner_t.exe
+CCOT=g++ -c
+TRGT=runner_tron.exe
 else
-CCO=g++ -c -DTRACE_OFF
-TRGT=runner.exe
+CCOT=g++ -c -DTRACE_OFF
+TRGT=runner_troff.exe
 endif
 
-$(TRGT): runner.o $(ALL_OBJS)
-	$(CC) runner.o $(ALL_OBJS) -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
+runner.exe: runner.o $(BASIC_ALL_OBJS) Tracer.o
+	$(CC) runner.o $(BASIC_ALL_OBJS) Tracer.o -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
 
 runner.o: runner.cpp
 	$(CCO) runner.cpp -std=c++0x $(INCLUDE) -o $@
 
-$(ALL_OBJS): $(ALL_SRCS)
+$(BASIC_ALL_OBJS): $(BASIC_ALL_SRCS)
 	$(CCO) $(SRC)$(@:.o=.cpp) -std=c++0x $(INCLUDE) -o $@
+  
+#######################################################################################
+basic: runner.exe
+
+tracer: $(TRGT)
+	@echo off
+
+$(TRGT): runTracer.o Tracer.o
+	$(CC) runTracer.o Tracer.o -std=c++0x $(INCLUDE) -o $@
+  
+runTracer.o: runTracer.cpp
+	$(CCOT) runTracer.cpp -std=c++0x $(INCLUDE) -o $@
+
+Tracer.o: $(SRC)Tracer.cpp
+	$(CCOT) $(SRC)Tracer.cpp -std=c++0x $(INCLUDE) -o $@
 
 clean:
 	del *.o
