@@ -9,7 +9,7 @@ del runner*.*
 @echo --------------- CREATING SOURCEFILES FOR TESTING ---------------
 @echo ----------------------------------------------------------------
 
-python c:\mingw\cxxtest\bin\cxxtestgen --error-printer -o runner.cpp test.hpp
+python c:\mingw\cxxtest\bin\cxxtestgen --error-printer -o runner.cpp testBasic.hpp
 python c:\mingw\cxxtest\bin\cxxtestgen --error-printer -o runTracer.cpp testTracer.hpp
 
 mingw32-make clean

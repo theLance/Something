@@ -42,4 +42,6 @@ public:
     #endif
   }
 
+  ///TEST THROW FOR LOGFILE REOPEN ATTEMPT
+
 };
