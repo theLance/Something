@@ -1,7 +1,4 @@
 @echo off
-REM --------------------------------------------------------------------------
-REM    Usage: run_test.bat OR run_test.bat traceon OR run_test.bat traceoff
-REM --------------------------------------------------------------------------
 
 del run_*.*
 
