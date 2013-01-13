@@ -13,7 +13,7 @@ class FakeTask : public Task
     void run() { TRACE("Running fake task..."); while(0){} }
 };
 
-class TestSuite : public CxxTest::TestSuite
+class BasicTestSuite : public CxxTest::TestSuite
 {
 public:
 

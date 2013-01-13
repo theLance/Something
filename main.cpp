@@ -22,9 +22,6 @@ int main()
   Worker wo(tp);
   boost::this_thread::sleep(boost::posix_time::seconds(1));
 
-  //---EARLY EXIT FOR TESTING---
-//  return 0;
-
   tp.create_workers();
   std::cout << "MAIN: Workers created..." << std::endl;
   boost::this_thread::sleep(boost::posix_time::seconds(1));
@@ -35,8 +32,6 @@ int main()
     std::cout << i << std::endl;
 
   boost::this_thread::sleep(boost::posix_time::seconds(1));
-//  tp.~ThreadPool();
-//  std::cout << "After TP destructor was called..." << std::endl;
   boost::this_thread::sleep(boost::posix_time::seconds(1));
   std::cout << "MAIN: End of inner scope -------" << std::endl;
   }

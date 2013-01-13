@@ -8,7 +8,7 @@
 #include "../include/Tracer.hpp"
 
 
-class TestSuite : public CxxTest::TestSuite
+class TracerTestSuite : public CxxTest::TestSuite
 {
 public:
 

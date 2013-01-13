@@ -11,7 +11,7 @@ LIBS=	-lboost_date_time-mgw46-mt-1_52	\
 	-lboost_system-mgw46-mt-1_52 \
 	-lboost_thread-mgw46-mt-1_52
 
-BASIC_ALL_OBJS := Worker.o ThreadPool.o TaskList.o
+BASIC_ALL_OBJS := Worker.o ThreadPool.o TaskList.o Tracer.o
 BASIC_ALL_SRCS := $(ALL_FILES:.o=.cpp)
 
 CC=g++
@@ -19,35 +19,48 @@ CCO=g++ -c -DTRACE_OFF
 
 ifeq ($(TRACE),ON)
 CCOT=g++ -c
-TRGT=runner_tron.exe
+TRGT=run_traceon.exe
 else
 CCOT=g++ -c -DTRACE_OFF
-TRGT=runner_troff.exe
+TRGT=run_traceoff.exe
 endif
 
-runner.exe: runner.o $(BASIC_ALL_OBJS) Tracer.o
-	$(CC) runner.o $(BASIC_ALL_OBJS) Tracer.o -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
+run_basic.exe: run_basic.o $(BASIC_ALL_OBJS)
+	$(CC) run_basic.o $(BASIC_ALL_OBJS) -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
 
-runner.o: runner.cpp
-	$(CCO) runner.cpp -std=c++0x $(INCLUDE) -o $@
+run_basic.o: run_basic.cpp
+	$(CCOT) run_basic.cpp -std=c++0x $(INCLUDE) -o $@
 
 $(BASIC_ALL_OBJS): $(BASIC_ALL_SRCS)
-	$(CCO) $(SRC)$(@:.o=.cpp) -std=c++0x $(INCLUDE) -o $@
+	$(CCOT) $(SRC)$(@:.o=.cpp) -std=c++0x $(INCLUDE) -o $@
   
 #######################################################################################
-basic: runner.exe
 
+run_task_exec.exe: run_task_exec.o $(BASIC_ALL_OBJS)
+	$(CC) run_task_exec.o $(BASIC_ALL_OBJS) -std=c++0x $(INCLUDE) $(LIBDIR) $(LIBS) -o $@
+
+run_task_exec.o: run_TaskExec.cpp
+	$(CCO) run_TaskExec.cpp -std=c++0x $(INCLUDE) -o $@
+
+#######################################################################################
+
+
+$(TRGT): run_Tracer.o Tracer.o
+	$(CC) run_Tracer.o Tracer.o -std=c++0x $(INCLUDE) -o $@
+  
+run_Tracer.o: run_Tracer.cpp
+	$(CCOT) run_Tracer.cpp -std=c++0x $(INCLUDE) -o $@
+
+#######################################################################################
+
+basic: run_basic.exe
+	@echo off
+	
+taskexec: run_task_exec.exe
+	@echo off
+	
 tracer: $(TRGT)
 	@echo off
-
-$(TRGT): runTracer.o Tracer.o
-	$(CC) runTracer.o Tracer.o -std=c++0x $(INCLUDE) -o $@
-  
-runTracer.o: runTracer.cpp
-	$(CCOT) runTracer.cpp -std=c++0x $(INCLUDE) -o $@
-
-Tracer.o: $(SRC)Tracer.cpp
-	$(CCOT) $(SRC)Tracer.cpp -std=c++0x $(INCLUDE) -o $@
 
 clean:
 	del *.o
