@@ -1,11 +1,15 @@
 #ifndef TASKLIST_HPP_INCLUDED
 #define TASKLIST_HPP_INCLUDED
 
+#include <functional>
+
 #include <boost/thread/mutex.hpp>
 
 #include <deque>
 
-#define SCOPEDLOCK boost::mutex::scoped_lock lock( m_mutex )
+#include "Tracer.hpp"
+
+#define SCOPEDLOCK boost::mutex::scoped_lock lock(  m_mutex );
 
 class Task
 {
@@ -13,10 +17,18 @@ class Task
     virtual void run() = 0;
 };
 
+class LambdaTask : public Task
+{
+  public:
+    explicit LambdaTask( std::function<void()> funct ) : runner(funct) {};
+    std::function<void()> runner;
+    void run() { runner(); }
+};
+
 class TaskList
 {
   public:
-    ///virtual ~TaskList() { clear memory }
+    virtual ~TaskList();
     Task* pop_task();
     void push_task( Task* task ) { m_tasks.push_front( task ); }
   private:

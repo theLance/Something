@@ -23,7 +23,10 @@ void Worker::execute_tasks()
       TRACE("Worker received task... Running...");
       m_workerstask->run();
     }
+    else
+    {
     boost::this_thread::sleep(boost::posix_time::millisec(500));
     ///implement sleep mechanism later!!!
+    }
   }
 }

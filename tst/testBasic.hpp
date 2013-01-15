@@ -17,30 +17,6 @@ class BasicTestSuite : public CxxTest::TestSuite
 {
 public:
 
-  void testTaskList()
-  {
-    banner("TaskList");
-    TaskList tl;
-    FakeTask ft;
-    Task* taskptr = &ft;
-    Task* testptr = nullptr;
-
-    banner("Insertion");
-    tl.push_task( taskptr );
-    TS_ASSERT_DIFFERS( 0, tl.m_tasks.size() );
-
-    banner("Extraction");
-    testptr = tl.pop_task();
-    TS_ASSERT_DIFFERS( nullptr, testptr );
-
-    banner("No pop when empty - safety check");
-    TS_ASSERT_EQUALS( 0, tl.m_tasks.size() );
-    testptr = tl.pop_task();
-    TS_ASSERT_EQUALS( nullptr, testptr );
-  }
-
-/*********************************************/
-
   void testCreateTp()
   {
     banner("Instantiation");
@@ -106,6 +82,29 @@ public:
     {
       TS_ASSERT_EQUALS( worker->m_isactive, false );
     }
+  }
+
+/*********************************************/
+  void testTaskList()
+  {
+    banner("TaskList");
+    TaskList tl;
+    FakeTask ft;
+    Task* taskptr = &ft;
+    Task* testptr = nullptr;
+
+    banner("Insertion");
+    tl.push_task( taskptr );
+    TS_ASSERT_DIFFERS( 0, tl.m_tasks.size() );
+
+    banner("Extraction");
+    testptr = tl.pop_task();
+    TS_ASSERT_DIFFERS( nullptr, testptr );
+
+    banner("No pop when empty - safety check");
+    TS_ASSERT_EQUALS( 0, tl.m_tasks.size() );
+    testptr = tl.pop_task();
+    TS_ASSERT_EQUALS( nullptr, testptr );
   }
 
   void testAddTaskToTp()

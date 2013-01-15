@@ -7,6 +7,13 @@
 
 #include "../include/ThreadPool.hpp"
 
+class Incrementor
+{
+  public:
+    static unsigned testnum;
+};
+
+unsigned Incrementor::testnum = 0;
 
 class TaskExecTestSuite : public CxxTest::TestSuite
 {
@@ -14,16 +21,17 @@ public:
 
   void testIncrementTask()
   {
-    banner("Incrementing static variable");
+    LambdaTask testtask( [](){ Incrementor::testnum++; } );
+    banner("Incrementing a variable");
     ThreadPool tp;
-    Worker wo(tp);
-    TS_ASSERT_EQUALS( wo.m_isalive, true );
-    TS_ASSERT_EQUALS( wo.m_isactive, false );
-    TS_ASSERT_EQUALS( wo.m_workerstask, nullptr );
-
-    ThreadPool* tpptr = &tp;
-    ThreadPool* tpptr2 = &wo.m_threadpool;
-    TS_ASSERT_EQUALS( tpptr, tpptr2 );
+    tp.create_workers();
+    for( unsigned i = 0; i < 50; i++ )
+    {
+      tp.push_task( &testtask );
+    }
+    tp.activate_workers();
+    while( !tp.m_tptasks.m_tasks.empty() ) {}
+    TS_ASSERT_EQUALS( Incrementor::testnum, 50 );
   }
 
 };
