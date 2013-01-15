@@ -7,6 +7,10 @@ TaskList::~TaskList()
   for( auto it : m_tasks )
   {
     delete it;
+<<<<<<< HEAD
+=======
+    std::cerr << "Task deleted\n";
+>>>>>>> 3581e162b7764a14fbf5d7bcb4a7731b2a145a27
   }
 }
 
