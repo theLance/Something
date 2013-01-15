@@ -48,7 +48,7 @@ mingw32-make tracer
 run_basic.exe
 
 @echo ----------------------------------------------------------------
-@echo ------------- TESTING BASIC FUNCTIONS - TRACES OFF -------------
+@echo -------------- TESTING TASK EXECUTION - TRACES OFF -------------
 @echo ----------------------------------------------------------------
 
 run_task_exec.exe

@@ -26,12 +26,26 @@ int main()
   std::cout << "MAIN: Workers created..." << std::endl;
   boost::this_thread::sleep(boost::posix_time::seconds(1));
 
+  LambdaTask testtask( [](){ /*empty*/ } );
+  for( unsigned i = 0; i < 5; i++ )
+  {
+    tp.push_task( &testtask );
+  }
+
   tp.activate_workers();
   std::cout << "MAIN: Workers activated..." << std::endl;
   for( int i = 0; i < 10; ++i )
     std::cout << i << std::endl;
 
+  tp.deactivate_workers();
+
   boost::this_thread::sleep(boost::posix_time::seconds(1));
+
+  for( unsigned i = 0; i < 5; i++ )
+  {
+    tp.push_task( &testtask );
+  }
+
   boost::this_thread::sleep(boost::posix_time::seconds(1));
   std::cout << "MAIN: End of inner scope -------" << std::endl;
   }
