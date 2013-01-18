@@ -84,6 +84,23 @@ public:
     }
   }
 
+  void testTpWorkerIds()
+  {
+    banner("TP: Worker IDs");
+    ThreadPool tp;
+    tp.create_workers();
+    std::stringstream strstm;
+    std::string numstr;
+
+    for( unsigned i = 0; i < 4; i++ )
+    {
+      strstm << (i+1) << " ";
+      strstm >> numstr;
+      TS_ASSERT_EQUALS( i+1, tp.m_workers[i]->get_id() );
+      TS_ASSERT_EQUALS( numstr, tp.m_workers[i]->get_id_str() );
+    }
+  }
+
 /*********************************************/
   void testTaskList()
   {

@@ -4,12 +4,12 @@
 
 Worker::~Worker()
 {
-  TRACE("Worker destruction commencing...");
+  TRACE("Worker " + get_id_str() + " destruction commencing...");
   m_isactive = false;
   m_isalive = false;
-  TRACE("Waiting for worker to join...");
+  TRACE("Waiting for Worker " + get_id_str() + " to join...");
   m_worker.join();
-  TRACE("Worker destroyed");
+  TRACE("Worker " + get_id_str() + " destroyed");
 }
 
 void Worker::execute_tasks()
@@ -20,13 +20,23 @@ void Worker::execute_tasks()
     m_workerstask = m_threadpool.pop_task();
     if( m_workerstask )
     {
-      TRACE("Worker received task... Running...");
+      TRACE("Worker " + get_id_str() + " received task... Running...");
       m_workerstask->run();
+      m_workerstask = NULL;
     }
     else
     {
-    boost::this_thread::sleep(boost::posix_time::millisec(500));
+    boost::this_thread::sleep(boost::posix_time::millisec(100));
     ///implement sleep mechanism later!!!
     }
   }
 }
+
+void Worker::set_id( unsigned id )
+{
+  m_identifier = id;
+  std::stringstream strstm;
+  strstm << id;
+  m_identifier_str = strstm.str();
+}
+
