@@ -92,7 +92,7 @@ public:
     std::stringstream strstm;
     std::string numstr;
 
-    for( unsigned i = 0; i < 4; i++ )
+    for( unsigned i = 0; i < NUM_OF_THREADS; i++ )
     {
       strstm << (i+1) << " ";
       strstm >> numstr;
