@@ -21,13 +21,20 @@ void Worker::execute_tasks()
     if( m_workerstask )
     {
       TRACE("Worker " + get_id_str() + " received task... Running...");
-      m_workerstask->run();
+      try
+      {
+        m_workerstask->run();
+      }
+      catch(...)
+      {
+        TRACE("Exception caused task to terminate in Worker " + get_id_str());
+      }
       m_workerstask = NULL;
     }
     else
     {
-    boost::this_thread::sleep(boost::posix_time::millisec(100));
-    ///implement sleep mechanism later!!!
+      boost::this_thread::yield();
+      boost::this_thread::sleep(boost::posix_time::millisec(50));
     }
   }
 }

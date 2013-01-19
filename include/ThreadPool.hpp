@@ -18,9 +18,12 @@ class ThreadPool
 {
   public:
     virtual ~ThreadPool();
+
     void create_workers();
     void activate_workers();
     void deactivate_workers();
+    void interrupt_worker( unsigned id ) { m_workers[id-1]->interrupt(); }
+
     void push_task( Task* task ) { TRACE("Pushing task to TP"); m_tptasks.push_task( task ); }
     Task* pop_task() { return m_tptasks.pop_task(); }
 

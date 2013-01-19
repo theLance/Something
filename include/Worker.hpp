@@ -10,6 +10,8 @@
 #include "Tracer.hpp"
 #include "TaskList.hpp"
 
+#define INTERRUPT boost::this_thread::interruption_point();
+
 class ThreadPool;
 
 class Worker
@@ -27,9 +29,9 @@ class Worker
                                                     while( m_isalive )
                                                     {
                                                       execute_tasks();
-                                                ///implement sleep mechanism later!!!
+                                                      boost::this_thread::yield();
                                                     }
-                                                    TRACE("Worker died");
+                                                    TRACE("Worker " + get_id_str() + " died");
                                                   })
                                         {
                                         };
@@ -43,6 +45,8 @@ class Worker
     std::string get_id_str() const { return m_identifier_str; }
 
     bool get_is_busy() { if( m_workerstask ) return true; else return false; }
+
+    void interrupt() { m_worker.interrupt(); }
 
   private:
     bool m_isactive;

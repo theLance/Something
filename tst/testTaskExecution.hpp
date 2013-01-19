@@ -19,13 +19,34 @@ class TaskExecTestSuite : public CxxTest::TestSuite
 {
 private:
   ThreadPool* m_tp;
+  LambdaTask testtask_increment;
+  LambdaTask testtask_empty;
+  LambdaTask testtask_wait;
+  LambdaTask testtask_interrupt;
+  LambdaTask testtask_interrupt_macro;
 
 public:
+  TaskExecTestSuite() : testtask_increment( [](){ Incrementor::testnum++; } )
+                      , testtask_empty( [](){} )
+                      , testtask_wait( [&](){ while( 0 == Incrementor::testnum ){} } )
+                      , testtask_interrupt( [](){
+                                            while( 0 == Incrementor::testnum )
+                                            {
+                                              boost::this_thread::interruption_point();
+                                            } })
+                      , testtask_interrupt_macro( [](){
+                                            while( 0 == Incrementor::testnum )
+                                            {
+                                              INTERRUPT;
+                                            } })
+  {
+  }
 
   void setUp()
   {
     m_tp = new ThreadPool;
     m_tp->create_workers();
+    Incrementor::testnum = 0;
   }
 
   void tearDown()
@@ -39,11 +60,10 @@ public:
   void testIncrementTask()
   {
     banner("Incrementing a variable");
-    LambdaTask testtask( [](){ Incrementor::testnum++; } );
 
     for( unsigned i = 0; i < 50; i++ )
     {
-      m_tp->push_task( &testtask );
+      m_tp->push_task( &testtask_increment );
     }
     m_tp->activate_workers();
     while( !m_tp->m_tptasks.m_tasks.empty() ) {}
@@ -55,18 +75,15 @@ public:
   void testBusyIndicator()
   {
     banner("Busy indicator test - artificial");
-    LambdaTask testtask( [](){} );
 
     TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
-    m_tp->m_workers[0]->m_workerstask = &testtask;
+    m_tp->m_workers[0]->m_workerstask = &testtask_empty;
     TS_ASSERT_EQUALS( true, m_tp->m_workers[0]->get_is_busy() );
     m_tp->m_workers[0]->m_workerstask = NULL;
     TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
 
     banner("Busy indicator test - live");
-    Incrementor::testnum = 0;
-    LambdaTask testtaskwait( [&](){ while( 0 == Incrementor::testnum ){} } );
-    m_tp->push_task( &testtaskwait );
+    m_tp->push_task( &testtask_wait );
 
     TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
     m_tp->m_workers[0]->activate();
@@ -74,7 +91,27 @@ public:
     boost::this_thread::sleep(boost::posix_time::millisec(50));
     TS_ASSERT_EQUALS( true, m_tp->m_workers[0]->get_is_busy() );
     Incrementor::testnum = 1;
-    m_tp->m_workers[0]->m_workerstask = NULL;
+    boost::this_thread::sleep(boost::posix_time::millisec(50));
+    TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
+  }
+
+  void testInterrupt()
+  {
+    banner("Control of interrupt - classical");
+
+    m_tp->push_task( &testtask_interrupt );
+    m_tp->m_workers[0]->activate();
+    while ( false == m_tp->m_workers[0]->get_is_busy() ) {}
+    m_tp->interrupt_worker(1);
+    boost::this_thread::sleep(boost::posix_time::millisec(50));
+    TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
+
+    banner("Control of interrupt - macro");
+
+    m_tp->push_task( &testtask_interrupt_macro );
+    while ( false == m_tp->m_workers[0]->get_is_busy() ) {}
+    m_tp->interrupt_worker(1);
+    boost::this_thread::sleep(boost::posix_time::millisec(50));
     TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
   }
 
