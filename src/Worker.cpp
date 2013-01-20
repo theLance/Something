@@ -24,8 +24,13 @@ void Worker::execute_tasks()
       try
       {
         m_workerstask->run();
+        TRACE("Worker " + get_id_str() + ": task complete");
       }
-      catch(...)
+      catch( const boost::thread_interrupted& )
+      {
+        TRACE("Interruption caused task to terminate in Worker " + get_id_str());
+      }
+      catch( ... )
       {
         TRACE("Exception caused task to terminate in Worker " + get_id_str());
       }

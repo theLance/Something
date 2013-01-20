@@ -28,7 +28,14 @@ class Worker
                                                     TRACE("Worker created");
                                                     while( m_isalive )
                                                     {
-                                                      execute_tasks();
+                                                      try
+                                                      {
+                                                        execute_tasks();
+                                                      }
+                                                      catch(...)
+                                                      {
+                                                        TRACE("Exception caught in Worker lambda");
+                                                      }
                                                       boost::this_thread::yield();
                                                     }
                                                     TRACE("Worker " + get_id_str() + " died");

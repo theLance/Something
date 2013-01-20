@@ -115,4 +115,39 @@ public:
     TS_ASSERT_EQUALS( false, m_tp->m_workers[0]->get_is_busy() );
   }
 
+  void testNoInterruptWhenIdle()
+  {
+    banner("Control of interrupt - No Interrupt when idle");
+
+    for( auto worker : m_tp->m_workers )
+    {
+      worker->interrupt();
+    }
+    m_tp->activate_workers();
+
+    for( auto worker : m_tp->m_workers )
+    {
+      worker->interrupt();
+    }
+
+    for( auto worker : m_tp->m_workers )
+    {
+      m_tp->push_task( &testtask_wait );
+    }
+
+    while ( !m_tp->m_tptasks.m_tasks.empty() ) {}
+    boost::this_thread::sleep(boost::posix_time::millisec(50));
+    for( auto worker : m_tp->m_workers )
+    {
+      TS_ASSERT_EQUALS( true, worker->get_is_busy() );
+    }
+
+    Incrementor::testnum = 1;
+    boost::this_thread::sleep(boost::posix_time::millisec(50));
+    for( auto worker : m_tp->m_workers )
+    {
+      TS_ASSERT_EQUALS( false, worker->get_is_busy() );
+    }
+  }
+
 };
