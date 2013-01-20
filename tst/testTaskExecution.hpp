@@ -130,6 +130,7 @@ public:
       worker->interrupt();
     }
 
+    //workers are still alive and can perform tasks
     for( auto worker : m_tp->m_workers )
     {
       m_tp->push_task( &testtask_wait );
